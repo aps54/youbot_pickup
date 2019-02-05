@@ -12,7 +12,8 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
   urdf
-  youbot_arm_kinematics_moveit
+  moveit_core
+  pluginlib
 )
 
 ## System dependencies are found with CMake's conventions
@@ -107,7 +108,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES youbot_pickup
-  CATKIN_DEPENDS nav_msgs roscpp std_msgs urdf youbot_arm_kinematics_moveit
+  CATKIN_DEPENDS nav_msgs roscpp std_msgs urdf moveit_core pluginlib
 #  DEPENDS system_lib
 )
 
@@ -149,7 +150,8 @@ include_directories(
 
 ## Specify libraries to link a library or executable target against
  target_link_libraries(${PROJECT_NAME}_node
-   ${catkin_LIBRARIES} ${Boost_LIBRARIES}
+   ${catkin_LIBRARIES} 
+   ${Boost_LIBRARIES}
  )
 
 #############

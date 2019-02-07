@@ -61,7 +61,14 @@ or enable the USE_SETCAP flag in the cmake file and recompile again.
 	<!-- Laser generator -->
 	<include file="$(find depthimage_to_laserscan)/launch/depth_registration_good_new.launch"/>
 
-	
+	<!-- Map server -->
+	<node pkg="map_server" type="map_server" name="map_server" args="/home/youbot/LAUNCH/map/my_map.yaml" />
+
+	<!-- amcl -->
+	<node pkg="amcl" type="amcl" name="amcl" output="screen"/>
+
+	<!-- youbot_pickup node -->
+	<!--<node pkg="youbot_pickup" type="youbot_pickup_node" name="youbot_pickup" respawn="true" output="screen"/> -->
 
 </launch>
 

@@ -45,7 +45,7 @@ or enable the USE_SETCAP flag in the cmake file and recompile again.
         </node>
 
         <!-- upoad URDF model to the parameter server -->
-        <param name="robot_description" command="$(find xacro)/xacro.py '$(find youbot_description)/robots/youbot.urdf.xacro'"/>
+        <param name="robot_description" command="$(find xacro)/xacro.py '$(find youbot_description)/robots/youbot.urdf.xacro'" respawn="true"/>
 
         <!-- start robot_state_publisher -->
         <node pkg="robot_state_publisher" type="state_publisher" name="robot_state_publisher" output="screen"/>
@@ -68,7 +68,7 @@ or enable the USE_SETCAP flag in the cmake file and recompile again.
 	<node pkg="amcl" type="amcl" name="amcl" output="screen"/>
 
 	<!-- youbot_pickup node -->
-	<node pkg="youbot_pickup" type="youbot_pickup_node" name="youbot_pickup" respawn="true" output="screen"/>
+	<!--<node pkg="youbot_pickup" type="youbot_pickup_node" name="youbot_pickup" respawn="true" output="screen"/> -->
 
 </launch>
 

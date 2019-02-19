@@ -9,7 +9,6 @@
 #include <pluginlib/class_loader.h>
 //#include <youbot_arm_kinematics_moveit/youbot_arm_kinematics_moveit.h>
 
-
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -21,26 +20,39 @@
 #include <boost/units/systems/si/length.hpp> //For m
 #include <boost/units/systems/si/plane_angle.hpp> //For rad
 
-typedef boost::shared_ptr<kinematics::KinematicsBase> KinematicsPtr;
-KinematicsPtr ik_;
+class YoubotArm {
 
-brics_actuator::JointPositions pos;
+	/* Private variables*/
+	
+	brics_actuator::JointPositions pos;
 
-std::vector<brics_actuator::JointValue> armJointPositions;
-std::vector<brics_actuator::JointValue> gripperJointPositions;
-
-// Publishers 
-ros::Publisher arm_pub, gripper_pub;
+	std::vector<brics_actuator::JointValue> armJointPositions;
+	std::vector<brics_actuator::JointValue> gripperJointPositions;
 
 
 
-int init(ros::NodeHandle& n);
+	// Publishers 
+	ros::Publisher arm_pub, gripper_pub;
 
-// 
-void publishArmValues(std::vector<double>& p);
+   protected:
 
-void publishGripperValues(double w);
+	typedef boost::shared_ptr<kinematics::KinematicsBase> KinematicsPtr;
+	KinematicsPtr ik_;
 
-void goHome();
+	
 
-int moveArm(std::vector<double>& seed, tf::Transform& goal);
+    public:
+
+	// Constructor
+	YoubotArm(ros::NodeHandle& n);
+
+	// 
+	void publishArmValues(std::vector<double>& p);
+
+	void publishGripperValues(double w);
+
+	void goHome();
+
+	int moveArm(std::vector<double>& seed, tf::Transform& goal);
+
+};

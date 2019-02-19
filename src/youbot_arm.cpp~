@@ -1,6 +1,6 @@
 #include <youbot_pickup/youbot_arm.h>
 
-int init(){
+YoubotArm::YoubotArm(ros::NodeHandle& n){
 
   // Publishers
   arm_pub = n.advertise<brics_actuator::JointPositions>("arm_1/arm_controller/position_command", 1);
@@ -12,19 +12,17 @@ int init(){
   {	
      ik_ = loader.createInstance("youbot_arm_kinematics_moveit::KinematicsPlugin");
      ik_->initialize("/robot_description", "arm_1", "arm_link_0", "arm_link_5", 0.1);
+     ROS_INFO("IK initialized.");
   }
 
   catch(pluginlib::PluginlibException& ex)
   {
      ROS_ERROR("Error loading the IK plugin. Error: %s", ex.what());
-     return -1;
+     exit(0);
   }
-
-  return 0;
-
 }
 
-void publishArmValues(std::vector<double>& p){
+void YoubotArm::publishArmValues(std::vector<double>& p){
    
    std::stringstream jointName;
    armJointPositions.resize(p.size());
@@ -43,7 +41,7 @@ void publishArmValues(std::vector<double>& p){
    ROS_INFO("END publishArmValues");
 }
 
-void publishGripperValues(double w){
+void YoubotArm::publishGripperValues(double w){
 
    gripperJointPositions.resize(2);
 
@@ -60,7 +58,7 @@ void publishGripperValues(double w){
    gripper_pub.publish(pos);
 }
 
-void goHome(){
+void YoubotArm::goHome(){
 
    std::vector<double> homeValues;
    
@@ -68,7 +66,7 @@ void goHome(){
    homeValues.push_back(0.11); //A2
    homeValues.push_back(-0.11);//A3
    homeValues.push_back(0.11); //A4
-   homeValues.push_back(0.111); //A5
+   homeValues.push_back(0.111);//A5
    
    ROS_INFO("Going to home...");
 
@@ -77,7 +75,7 @@ void goHome(){
 
 }
 
-int moveArm(std::vector<double>& seed, tf::Transform& goal){
+int YoubotArm::moveArm(std::vector<double>& seed, tf::Transform& goal){
 
     std::vector<double> solution;
     moveit_msgs::MoveItErrorCodes error_code;

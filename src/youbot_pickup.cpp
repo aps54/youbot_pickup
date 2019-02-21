@@ -21,6 +21,7 @@
 
 //This project's 
 #include <youbot_pickup/youbot_arm.h>
+#include <youbot_pickup/youbot_base.h>
 
 //tf::Point in_point;
 
@@ -34,20 +35,16 @@ int main(int argc, char** argv){
 	ros::NodeHandle n;
 
 	// TF
-   	tf::Transform goal_tf;
+   	//tf::Transform goal_tf;
    	tf::TransformListener* tfListener = new tf::TransformListener();
    	tf::StampedTransform a0_to_base_link;
 	tf::StampedTransform a5_to_a0;
-
-	std::vector<double> initSeed;
-	std::vector<double> graspSeed;
-	std::vector<double> placeSeed;
 
 	/*in_point.setX(atof(argv[1]));
 	in_point.setY(atof(argv[2]));
 	in_point.setZ(atof(argv[3]));*/
 	
-	sleep(2); // For TF
+	sleep(2); // For fill TF
 	
 	try {
 	   tfListener->lookupTransform("arm_link_0", "base_link", ros::Time(0), a0_to_base_link);
@@ -58,29 +55,9 @@ int main(int argc, char** argv){
 	}
 
 	
-	tf::Vector3 t;
-	t.setValue(0.341, 0.006, 0.047);
-	
-	goal_tf.setOrigin(t); //in_point
-	
-	tf::Quaternion rotation(-0.051, 0.999, -0.000, 0.013);
-	
-	goal_tf.setRotation(rotation);
-
-	//goal_tf = a5_to_a0 * goal_tf;
-
 	YoubotArm* youbotArm = new YoubotArm(n);
 
-	/*-- Pre-grasp position. --*/
-	           
-	// Seed values. Obtained with rviz (arm simulator).
-	initSeed.push_back(2.95);
-	initSeed.push_back(2.32);
-	initSeed.push_back(-2.18);
-	initSeed.push_back(3.36);
-	initSeed.push_back(3.00);
-
-	          
+	/*-- Pre-grasp position. --*/        
 
 	     /*seed.push_back(0.00010);
 	     seed.push_back(0.0);
@@ -88,51 +65,29 @@ int main(int argc, char** argv){
 	     seed.push_back(0.00022);
 	     seed.push_back(0.00922);*/
 
-	youbotArm->moveArm(initSeed, goal_tf);
-	youbotArm->publishGripperValues(0.0115); // Open the gripper with the move of the arm.				
+	youbotArm->goToPregrasp();
+	youbotArm->openGripper(); // Open the gripper with the move of the arm.				
 		
 	     
 
 	sleep(5); // Wait for the arm to adopt the pose 
 
 	/*-- Go to the grasp position. --*/
-	graspSeed.push_back(2.95);
-	graspSeed.push_back(2.37);
-	graspSeed.push_back(-1.64);
-	graspSeed.push_back(2.77);
-	graspSeed.push_back(3.00);
-	
-     	t.setValue(0.321, 0.005, -0.038);
-	goal_tf.setOrigin(t);
-
-	rotation.setValue(-0.051, 0.999, -0.000, 0.009);
-	goal_tf.setRotation(rotation);
     	     
-	youbotArm->moveArm(graspSeed, goal_tf);	
+	youbotArm->goToGrasp();	
 	sleep(5); // Wait for reseach the goal.    
 	
 	// Grasping the object.
-	youbotArm->publishGripperValues(0.0);		      
+	youbotArm->closeGripper();		      
 
-	sleep(5); // Wait until the gripper opens.
+	sleep(5); // Wait until the gripper closes.
 
 	/*-- Place the object in the plataform. --*/
-	placeSeed.push_back(3.09);
-	placeSeed.push_back(-0.0);
-	placeSeed.push_back(-2.61);
-	placeSeed.push_back(0.017);
-	placeSeed.push_back(2.92);
-
-	t.setValue(-0.227, 0.034, 0.100);
-	goal_tf.setOrigin(t);
-
-	rotation.setValue(0.067, 0.994, 0.005, -0.083);
-	goal_tf.setRotation(rotation);
-	
-	youbotArm->moveArm(placeSeed, goal_tf);
+		
+	youbotArm->goToPlace();
 	sleep(2); // Wait to prevent falls.
 
-	youbotArm->publishGripperValues(0.0115);
+	youbotArm->openGripper();
 
 	sleep(2); 
 	youbotArm->goHome();
@@ -140,6 +95,9 @@ int main(int argc, char** argv){
 	delete youbotArm;
 	youbotArm = 0;
    
+	delete youbotBase;
+	youbotBase = 0;	
+	
 	return 0;
 
    //}

@@ -5,6 +5,7 @@ YoubotArm::YoubotArm(ros::NodeHandle& n){
   // Publishers
   arm_pub = n.advertise<brics_actuator::JointPositions>("arm_1/arm_controller/position_command", 1);
   gripper_pub = n.advertise<brics_actuator::JointPositions>("arm_1/gripper_controller/position_command", 1);
+  
 
   // Instance & initialize IK solver       
   pluginlib::ClassLoader<kinematics::KinematicsBase> loader("moveit_core", "kinematics::KinematicsBase");
@@ -20,6 +21,54 @@ YoubotArm::YoubotArm(ros::NodeHandle& n){
      ROS_ERROR("Error loading the IK plugin. Error: %s", ex.what());
      exit(0);
   }
+
+  // Set values for IK seed values. (Obtained experimentaly)
+  initSeed.push_back(2.95);
+  initSeed.push_back(2.32);
+  initSeed.push_back(-2.18);
+  initSeed.push_back(3.36);
+  initSeed.push_back(3.00);
+
+  graspSeed.push_back(2.95);
+  graspSeed.push_back(2.37);
+  graspSeed.push_back(-1.64);
+  graspSeed.push_back(2.77);
+  graspSeed.push_back(3.00);
+
+  placeSeed.push_back(3.09);
+  placeSeed.push_back(-0.0);
+  placeSeed.push_back(-2.61);
+  placeSeed.push_back(0.017);
+  placeSeed.push_back(2.92);
+
+  // Set transforms for IK.
+  tf::Vector3 t;
+  t.setValue(0.341, 0.006, 0.047);
+  tf::Quaternion rotation(-0.051, 0.999, -0.000, 0.013);
+	
+  init_tf.setOrigin(t);  	
+  init_tf.setRotation(rotation);
+
+  t.setValue(0.321, 0.005, -0.038);
+  rotation.setValue(-0.051, 0.999, -0.000, 0.009);
+
+  grasp_tf.setOrigin(t);
+  grasp_tf.setRotation(rotation);
+
+  t.setValue(-0.227, 0.034, 0.100);
+  rotation.setValue(0.067, 0.994, 0.005, -0.083);
+
+  place_tf.setOrigin(t);
+  place_tf.setRotation(rotation);
+
+
+  // Set home values
+  homeValues.push_back(0.11); //A1
+  homeValues.push_back(0.11); //A2
+  homeValues.push_back(-0.11);//A3
+  homeValues.push_back(0.11); //A4
+  homeValues.push_back(0.111);//A5
+
 }
 
 void YoubotArm::publishArmValues(std::vector<double>& p){
@@ -59,14 +108,6 @@ void YoubotArm::publishGripperValues(double w){
 }
 
 void YoubotArm::goHome(){
-
-   std::vector<double> homeValues;
-   
-   homeValues.push_back(0.11); //A1
-   homeValues.push_back(0.11); //A2
-   homeValues.push_back(-0.11);//A3
-   homeValues.push_back(0.11); //A4
-   homeValues.push_back(0.111);//A5
    
    ROS_INFO("Going to home...");
 
@@ -109,4 +150,36 @@ int YoubotArm::moveArm(std::vector<double>& seed, tf::Transform& goal){
      } else{ std::cout << "Error: " << error_code.val << std::endl;
 	return -1;
      }
+}
+
+/* Auxiliar functions */
+
+void YoubotArm::openGripper(){
+
+    publishGripperValues(0.0115);
+
+}
+
+void YoubotArm::closeGripper(){
+
+    publishGripperValues(0.0);
+
+}
+
+void YoubotArm::goToPregrasp(){
+
+    moveArm(initSeed, init_tf);
+
+}
+
+void YoubotArm::goToGrasp(){
+
+    moveArm(graspSeed, grasp_tf);
+
+}
+
+void YoubotArm::goToPlace(){
+
+    moveArm(placeSeed, place_tf);
+
 }

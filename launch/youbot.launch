@@ -62,7 +62,7 @@ or enable the USE_SETCAP flag in the cmake file and recompile again.
 	<include file="$(find depthimage_to_laserscan)/launch/depth_registration_good_new.launch"/>
 
 	<!-- Map server -->
-	<node pkg="map_server" type="map_server" name="map_server" args="/home/youbot/LAUNCH/map/my_map.yaml" />
+	<node pkg="map_server" type="map_server" name="map_server" args="/home/youbot/LAUNCH/map/my_map.yaml" respawn="true"/>
 
 	<!-- amcl -->
 	<node pkg="amcl" type="amcl" name="amcl" output="screen"/>

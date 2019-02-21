@@ -22,17 +22,36 @@
 
 class YoubotArm {
 
-	/* Private variables*/
+	/* Private variables */
 	
 	brics_actuator::JointPositions pos;
 
 	std::vector<brics_actuator::JointValue> armJointPositions;
 	std::vector<brics_actuator::JointValue> gripperJointPositions;
 
+	// Seed values
+	std::vector<double> initSeed;
+	std::vector<double> graspSeed;
+	std::vector<double> placeSeed;
 
+	// Home values
+	std::vector<double> homeValues;
+
+	// Transforms
+	tf::Transform init_tf;
+	tf::Transform grasp_tf;
+	tf::Transform place_tf;
 
 	// Publishers 
 	ros::Publisher arm_pub, gripper_pub;
+
+  	/* Private functions */
+
+	void publishArmValues(std::vector<double>& p);
+
+	void publishGripperValues(double w);
+
+	int moveArm(std::vector<double>& seed, tf::Transform& goal);
 
    protected:
 
@@ -43,16 +62,20 @@ class YoubotArm {
 
     public:
 
-	// Constructor
+	/* Constructor */
 	YoubotArm(ros::NodeHandle& n);
 
-	// 
-	void publishArmValues(std::vector<double>& p);
-
-	void publishGripperValues(double w);
-
+	/* Auxiliar functions */
+	
 	void goHome();
+	
+	// Gripper functions
+	void openGripper();
+	void closeGripper();
 
-	int moveArm(std::vector<double>& seed, tf::Transform& goal);
-
+	// Arm positions functions
+	void goToPregrasp();
+	void goToGrasp();
+	void goToPlace();
+	
 };

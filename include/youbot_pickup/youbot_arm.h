@@ -69,11 +69,11 @@ class YoubotArm {
 	
 	void goHome();
 	
-	// Gripper functions
+	// Gripper's functions
 	void openGripper();
 	void closeGripper();
 
-	// Arm positions functions
+	// Arm position's functions
 	void goToPregrasp();
 	void goToGrasp();
 	void goToPlace();

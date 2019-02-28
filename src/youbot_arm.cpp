@@ -41,7 +41,7 @@ YoubotArm::YoubotArm(ros::NodeHandle& n){
   placeSeed.push_back(0.017);
   placeSeed.push_back(2.92);
 
-  // Set transforms for IK.
+  // Set transforms for IK. (Empirically obtained)
   tf::Vector3 t;
   t.setValue(0.341, 0.006, 0.047);
   tf::Quaternion rotation(-0.051, 0.999, -0.000, 0.013);

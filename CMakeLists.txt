@@ -15,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   moveit_core
   pluginlib
   tf
+  visp_ros
 )
 
 ## System dependencies are found with CMake's conventions
@@ -109,7 +110,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES youbot_pickup
-  CATKIN_DEPENDS nav_msgs roscpp std_msgs urdf moveit_core pluginlib tf
+  CATKIN_DEPENDS nav_msgs roscpp std_msgs urdf moveit_core pluginlib tf visp_ros
 #  DEPENDS system_lib
 )
 
@@ -137,7 +138,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
- add_executable(${PROJECT_NAME}_node src/youbot_arm.cpp src/youbot_pickup.cpp)
+ add_executable(${PROJECT_NAME}_node src/youbot_arm.cpp src/youbot_pickup.cpp src/youbot_base.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -175,6 +176,9 @@ include_directories(
    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
+
+## Mark launch directory for installation
+install(DIRECTORY launch DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 ## Mark cpp header files for installation
 # install(DIRECTORY include/${PROJECT_NAME}/

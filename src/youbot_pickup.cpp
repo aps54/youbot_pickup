@@ -35,14 +35,14 @@ int main(int argc, char** argv){
     //tf::Transform goal_tf;
     tf::TransformListener* tfListener = new tf::TransformListener();
     tf::StampedTransform a0_to_base_link;
-    tf::StampedTransform a5_to_a0;
+    tf::StampedTransform a0_to_a5;
+    tf::StampedTransform camera_to_base;
 	
-    sleep(2); // For fill TF
+    sleep(2); // For fill TF listener.
 	
     try {
 	tfListener->lookupTransform("arm_link_0", "base_link", ros::Time(0), a0_to_base_link);
-	tfListener->lookupTransform("arm_link_5", "arm_link_0", ros::Time(0), a5_to_a0);
-
+	tfListener->lookupTransform("arm_link_0", "arm_link_5", ros::Time(0), a0_to_a5);
     } catch(tf::LookupException e){
 	ROS_ERROR("Error looking the TF. Error: %s", e.what());
     }
@@ -52,14 +52,26 @@ int main(int argc, char** argv){
 
     YoubotBase* youbotBase = new YoubotBase(n);
 
-    /*-- Pre-grasp position. --*/        
+    geometry_msgs::Pose base_goal;
+    base_goal.position.x = 0.06373;
+    base_goal.position.y = 0.84160;
+    base_goal.position.z = 0.87075;
+
+    base_goal.orientation.x = -0.93039;
+    base_goal.orientation.y = -0.03312;
+    base_goal.orientation.z = 0.36485;
+    base_goal.orientation.w = 0.01238;
+
+    youbotBase->publishGoal(base_goal);
+
+    /*-- Pre-grasp position. --        
 
     youbotArm->goToPregrasp();
     youbotArm->openGripper(); // Open the gripper with the move of the arm.				
 		
     sleep(5); // Wait for the arm to adopt the pose 
 
-    /*-- Go to the grasp position. --*/
+    /*-- Go to the grasp position. --
     	     
     youbotArm->goToGrasp();	
     sleep(5); // Wait for reseach the goal.    
@@ -69,16 +81,16 @@ int main(int argc, char** argv){
 
     sleep(5); // Wait until the gripper closes.
 
-    /*-- Place the object in the plataform. --*/
+    /*-- Place the object in the plataform. --
 		
     youbotArm->goToPlace();
     sleep(2); // Wait to prevent falls.
 
     youbotArm->openGripper();
+    sleep(5); // Wait until the gripper is all open.
 
-    sleep(2); 
     youbotArm->goHome();
-
+*/
     delete youbotArm;
     youbotArm = 0;
    

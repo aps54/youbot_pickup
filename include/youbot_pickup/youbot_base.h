@@ -14,4 +14,6 @@ class YoubotBase {
 	/* Constructor */
 	YoubotBase(ros::NodeHandle& n);
 
+	void publishGoal(geometry_msgs::Pose& p);
+
 };

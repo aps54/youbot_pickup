@@ -122,7 +122,7 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
  include
-  ${catkin_INCLUDE_DIRS}
+  ${catkin_INCLUDE_DIRS} ${visp_ros_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -154,6 +154,7 @@ include_directories(
  target_link_libraries(${PROJECT_NAME}_node
    ${catkin_LIBRARIES} 
    ${Boost_LIBRARIES}
+   ${visp_ros_LIBRARIES}
  )
 
 #############

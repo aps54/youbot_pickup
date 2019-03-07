@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(youbot_pickup)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+ add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -15,7 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   moveit_core
   pluginlib
   tf
-  visp_ros
+  #visp_ros
 )
 
 ## System dependencies are found with CMake's conventions
@@ -122,7 +122,8 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
  include
-  ${catkin_INCLUDE_DIRS} ${visp_ros_INCLUDE_DIRS}
+  ${catkin_INCLUDE_DIRS} 
+ #${visp_ros_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -154,7 +155,7 @@ include_directories(
  target_link_libraries(${PROJECT_NAME}_node
    ${catkin_LIBRARIES} 
    ${Boost_LIBRARIES}
-   ${visp_ros_LIBRARIES}
+   #${visp_ros_LIBRARIES}
  )
 
 #############

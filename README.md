@@ -1,2 +1,2 @@
 # youbot_pickup
-This application is in development, so it's possible some parts don't runs.
+This application is in development, so it's possible that some parts may don't works.

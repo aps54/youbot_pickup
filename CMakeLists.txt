@@ -15,11 +15,15 @@ find_package(catkin REQUIRED COMPONENTS
   moveit_core
   pluginlib
   tf
-  #visp_ros
+  visp_ros
+)
+
+find_package(catkin REQUIRED COMPONENTS
+  ${ROS_CXX_DEPENDENCIES}
 )
 
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
+ find_package(Boost REQUIRED COMPONENTS system)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -123,7 +127,7 @@ catkin_package(
 include_directories(
  include
   ${catkin_INCLUDE_DIRS} 
- #${visp_ros_INCLUDE_DIRS}
+  ${visp_ros_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -139,7 +143,12 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
- add_executable(${PROJECT_NAME}_node src/youbot_arm.cpp src/youbot_pickup.cpp src/youbot_base.cpp)
+ add_executable(${PROJECT_NAME}_node 
+    src/youbot_arm.cpp 
+    src/youbot_pickup.cpp 
+    src/youbot_base.cpp
+    src/qr_detection.cpp
+)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -155,7 +164,7 @@ include_directories(
  target_link_libraries(${PROJECT_NAME}_node
    ${catkin_LIBRARIES} 
    ${Boost_LIBRARIES}
-   #${visp_ros_LIBRARIES}
+   ${visp_ros_LIBRARIES}
  )
 
 #############
@@ -183,11 +192,11 @@ include_directories(
 install(DIRECTORY launch DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 ## Mark cpp header files for installation
-# install(DIRECTORY include/${PROJECT_NAME}/
-#   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-#   FILES_MATCHING PATTERN "*.h"
-#   PATTERN ".svn" EXCLUDE
-# )
+ install(DIRECTORY include/${PROJECT_NAME}/
+   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+   FILES_MATCHING PATTERN "*.h"
+   PATTERN ".svn" EXCLUDE
+ )
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 # install(FILES

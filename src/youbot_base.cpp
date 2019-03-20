@@ -4,7 +4,7 @@
 YoubotBase::YoubotBase(ros::NodeHandle& n){
 
     // Publishers
-    base_pub = n.advertise<geometry_msgs::PoseStamped>("move_base/goal", 1);
+    base_pub = n.advertise<geometry_msgs::PoseStamped>("move_base_simple/goal", 1);
 
 }
 

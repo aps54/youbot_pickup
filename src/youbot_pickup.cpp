@@ -22,8 +22,7 @@
 //This project's 
 #include <youbot_pickup/youbot_arm.h>
 #include <youbot_pickup/youbot_base.h>
-
-//tf::Point in_point;
+#include <youbot_pickup/qr_detection.h>
 
 int main(int argc, char** argv){
   
@@ -47,13 +46,18 @@ int main(int argc, char** argv){
 	ROS_ERROR("Error looking the TF. Error: %s", e.what());
     }
 
+    
 	
     YoubotArm* youbotArm = new YoubotArm(n);
 
     YoubotBase* youbotBase = new YoubotBase(n);
 
+    QRDetector* qrDetector = new QRDetector();
+
+    //while(ros::ok()){
+
     geometry_msgs::Pose base_goal;
-    base_goal.position.x = 0.06373;
+/*    base_goal.position.x = 0.06373;
     base_goal.position.y = 0.84160;
     base_goal.position.z = 0.87075;
 
@@ -62,8 +66,20 @@ int main(int argc, char** argv){
     base_goal.orientation.z = 0.36485;
     base_goal.orientation.w = 0.01238;
 
-    youbotBase->publishGoal(base_goal);
+    youbotBase->publishGoal(base_goal);*/
 
+    if(qrDetector->detect()){
+
+	    if(qrDetector->isQR()){
+		ROS_INFO("QR DETECTED!");
+		ROS_INFO("The QR pose is: ");
+	    	base_goal = qrDetector->getPose();
+		ROS_INFO("Position (x, y, z): %e, %e, %e", base_goal.position.x, base_goal.position.y, base_goal.position.z);
+		ROS_INFO("Orientation (x, y, z, w): %e, %e, %e, %e", base_goal.orientation.x, base_goal.orientation.y, base_goal.orientation.z, base_goal.orientation.w);
+	    	youbotBase->publishGoal(base_goal);
+	    }
+    
+    } else ROS_ERROR("Error with the QR detection.");
     /*-- Pre-grasp position. --        
 
     youbotArm->goToPregrasp();
@@ -90,12 +106,17 @@ int main(int argc, char** argv){
     sleep(5); // Wait until the gripper is all open.
 
     youbotArm->goHome();
-*/
+
+      ros::spinOnce();  
+    }*/
     delete youbotArm;
     youbotArm = 0;
    
     delete youbotBase;
-    youbotBase = 0;	
+    youbotBase = 0;
+
+    delete qrDetector;
+    qrDetector = 0;	
 	
     return 0;
 

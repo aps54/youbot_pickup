@@ -30,6 +30,7 @@ class QRDetector {
 
 	//! [Pose computation]
 	vpHomogeneousMatrix cMo;
+	vpCameraParameters cam;
 	// 3D model of the QRcode
 	std::vector<vpPoint> point;
         //! [Pose computation]

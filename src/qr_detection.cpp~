@@ -156,11 +156,11 @@ void QRDetector::getPose(vpHomogeneousMatrix& cMo, geometry_msgs::Pose& qr_pose)
 
 	qr_pose.position.x = t[0];
   	qr_pose.position.y = t[1];
-  	qr_pose.position.z = 0;
+  	qr_pose.position.z = t[2];
 
-  	qr_pose.orientation.x = 0;
-  	qr_pose.orientation.y = 0;
-  	qr_pose.orientation.z = vpQ.z();
+  	qr_pose.orientation.x = vpQ.x();
+  	qr_pose.orientation.y = vpQ.y();
+  	qr_pose.orientation.z = 1;
   	qr_pose.orientation.w = vpQ.w();
 
 	detected = false;

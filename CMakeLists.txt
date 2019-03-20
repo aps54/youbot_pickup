@@ -18,8 +18,12 @@ find_package(catkin REQUIRED COMPONENTS
   visp_ros
 )
 
+find_package(catkin REQUIRED COMPONENTS
+  ${ROS_CXX_DEPENDENCIES}
+)
+
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
+ find_package(Boost REQUIRED COMPONENTS system)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -108,7 +112,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
+  INCLUDE_DIRS include
 #  LIBRARIES youbot_pickup
   CATKIN_DEPENDS nav_msgs roscpp std_msgs urdf moveit_core pluginlib tf visp_ros
 #  DEPENDS system_lib
@@ -122,7 +126,8 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
  include
-  ${catkin_INCLUDE_DIRS} ${visp_ros_INCLUDE_DIRS}
+ ${catkin_INCLUDE_DIRS} 
+ ${visp_ros_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -184,14 +189,14 @@ add_executable(${PROJECT_NAME}_node
  )
 
 ## Mark launch directory for installation
-install(DIRECTORY launch DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+ install(DIRECTORY launch DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 ## Mark cpp header files for installation
-# install(DIRECTORY include/${PROJECT_NAME}/
-#   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-#   FILES_MATCHING PATTERN "*.h"
-#   PATTERN ".svn" EXCLUDE
-# )
+ install(DIRECTORY include/${PROJECT_NAME}/
+   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+   FILES_MATCHING PATTERN "*.h"
+   PATTERN ".svn" EXCLUDE
+ )
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 # install(FILES

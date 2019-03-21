@@ -13,7 +13,7 @@ void YoubotBase::publishGoal(geometry_msgs::Pose& p){
 	geometry_msgs::PoseStamped goal;
 	
 	goal.header.stamp = ros::Time::now();
-	goal.header.frame_id = "base_link";
+	goal.header.frame_id = "odom";
 
 	goal.pose = p;
 

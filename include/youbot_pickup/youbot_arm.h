@@ -68,6 +68,8 @@ class YoubotArm {
 	/* Auxiliar functions */
 	
 	void goHome();
+
+	tf::Transform initialPose();
 	
 	// Gripper's functions
 	void openGripper();

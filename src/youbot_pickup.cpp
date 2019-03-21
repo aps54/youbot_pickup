@@ -36,6 +36,7 @@ int main(int argc, char** argv){
     tf::StampedTransform a0_to_base_link;
     tf::StampedTransform a0_to_a5;
     tf::StampedTransform camera_to_base;
+    tf::StampedTransform camera_to_odom;
 	
     sleep(2); // For fill TF listener.
 	
@@ -76,7 +77,47 @@ int main(int argc, char** argv){
 	    	base_goal = qrDetector->getPose();
 		ROS_INFO("Position (x, y, z): %e, %e, %e", base_goal.position.x, base_goal.position.y, base_goal.position.z);
 		ROS_INFO("Orientation (x, y, z, w): %e, %e, %e, %e", base_goal.orientation.x, base_goal.orientation.y, base_goal.orientation.z, base_goal.orientation.w);
-	    	youbotBase->publishGoal(base_goal);
+
+		try {
+		  tfListener->lookupTransform("camera_link", "odom", ros::Time(0), camera_to_odom);
+
+		  geometry_msgs::Transform transform;		
+		  tf::Vector3 p;
+		  tf::Quaternion q;
+
+		  p = camera_to_odom.getOrigin();
+		  q = camera_to_odom.getRotation();
+		  ROS_INFO("The camera to odom transform:");
+		  ROS_INFO("Translation (x, y, z): %e, %e, %e", p.getX(), p.getY(), p.getZ());
+		  ROS_INFO("Rotation (x, y, z, w): %e, %e, %e, %e", q.getX(), q.getY(), q.getZ(), q.getW());
+
+		  tf::Transform goal_tf;
+		  p.setValue(base_goal.position.x, base_goal.position.y, base_goal.position.z);
+		  goal_tf.setOrigin(p);
+		  q.setValue(base_goal.orientation.x, base_goal.orientation.y, base_goal.orientation.z, base_goal.orientation.w);
+		  goal_tf.setRotation(q);
+		  goal_tf = goal_tf * camera_to_odom;
+
+		  p = goal_tf.getOrigin();
+		  base_goal.position.x = p.getX();
+		  base_goal.position.y = p.getY();
+		  base_goal.position.z = p.getZ();
+
+		  q = goal_tf.getRotation();
+		  base_goal.orientation.x = q.getX();
+		  base_goal.orientation.y = q.getY();
+		  base_goal.orientation.z = q.getZ();
+		  base_goal.orientation.w = q.getW();
+
+		  ROS_INFO("The computed pose will be:");
+		  ROS_INFO("Position (x, y, z): %e, %e, %e", base_goal.position.x, base_goal.position.y, base_goal.position.z);
+		  ROS_INFO("Orientation (x, y, z, w): %e, %e, %e, %e", base_goal.orientation.x, base_goal.orientation.y, base_goal.orientation.z, base_goal.orientation.w);
+
+    		} catch(tf::LookupException e){
+		  ROS_ERROR("Error looking the TF (camera_link --> odom). Error: %s", e.what());
+    		}
+		
+//	    	youbotBase->publishGoal(base_goal);
 	    }
     
     } else ROS_ERROR("Error with the QR detection.");
@@ -109,6 +150,10 @@ int main(int argc, char** argv){
 
       ros::spinOnce();  
     }*/
+
+    delete tfListener;
+    tfListener = 0;
+
     delete youbotArm;
     youbotArm = 0;
    

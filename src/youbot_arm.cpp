@@ -107,14 +107,6 @@ void YoubotArm::publishGripperValues(double w){
    gripper_pub.publish(pos);
 }
 
-void YoubotArm::goHome(){
-   
-   ROS_INFO("Going to home...");
-
-   publishArmValues(homeValues);
-   publishGripperValues(0.0);
-
-}
 
 int YoubotArm::moveArm(std::vector<double>& seed, tf::Transform& goal){
 
@@ -153,6 +145,20 @@ int YoubotArm::moveArm(std::vector<double>& seed, tf::Transform& goal){
 }
 
 /* Auxiliar functions */
+
+void YoubotArm::goHome(){
+   
+   ROS_INFO("Going to home...");
+
+   publishArmValues(homeValues);
+   publishGripperValues(0.0);
+
+}
+
+tf::Transform YoubotArm::initialPose(){
+
+  return init_tf;
+}
 
 void YoubotArm::openGripper(){
 

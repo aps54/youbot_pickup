@@ -61,7 +61,8 @@ or enable the USE_SETCAP flag in the cmake file and recompile again.
 	<!-- Laser generator -->
 	<include file="$(find depthimage_to_laserscan)/launch/depth_registration_good_new.launch"/>
 
-	
+	<!-- Joystick control -->
+	<include file="$(find teleop_joy)/launch/youbot_teleop_joy.launch"/>
 
 </launch>
 

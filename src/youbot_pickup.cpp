@@ -47,7 +47,7 @@ int main(int argc, char** argv){
 	ROS_ERROR("Error looking the TF. Error: %s", e.what());
     }
 
-    
+   /*-- Initializations --*/ 
 	
     YoubotArm* youbotArm = new YoubotArm(n);
 
@@ -58,16 +58,18 @@ int main(int argc, char** argv){
     //while(ros::ok()){
 
     geometry_msgs::Pose base_goal;
-/*    base_goal.position.x = 0.06373;
+/*  base_goal.position.x = 0.06373;
     base_goal.position.y = 0.84160;
-    base_goal.position.z = 0.87075;
+    base_goal.position.z = 0.0;
 
-    base_goal.orientation.x = -0.93039;
-    base_goal.orientation.y = -0.03312;
+    base_goal.orientation.x = 0.0;
+    base_goal.orientation.y = 0.0;
     base_goal.orientation.z = 0.36485;
     base_goal.orientation.w = 0.01238;
 
-    youbotBase->publishGoal(base_goal);*/
+    youbotBase->publishGoal(base_goal);
+*/
+    /*-- QR code detection and pose estimation --*/
 
     if(qrDetector->detect()){
 
@@ -78,6 +80,7 @@ int main(int argc, char** argv){
 		ROS_INFO("Position (x, y, z): %e, %e, %e", base_goal.position.x, base_goal.position.y, base_goal.position.z);
 		ROS_INFO("Orientation (x, y, z, w): %e, %e, %e, %e", base_goal.orientation.x, base_goal.orientation.y, base_goal.orientation.z, base_goal.orientation.w);
 
+		// Transform the pose to odom frame
 		try {
 		  tfListener->lookupTransform("camera_link", "odom", ros::Time(0), camera_to_odom);
 
@@ -96,7 +99,7 @@ int main(int argc, char** argv){
 		  goal_tf.setOrigin(p);
 		  q.setValue(base_goal.orientation.x, base_goal.orientation.y, base_goal.orientation.z, base_goal.orientation.w);
 		  goal_tf.setRotation(q);
-		  goal_tf = goal_tf * camera_to_odom;
+		  goal_tf = goal_tf * camera_to_odom; // Do the transform
 
 		  p = goal_tf.getOrigin();
 		  base_goal.position.x = p.getX();
@@ -117,19 +120,20 @@ int main(int argc, char** argv){
 		  ROS_ERROR("Error looking the TF (camera_link --> odom). Error: %s", e.what());
     		}
 		
-//	    	youbotBase->publishGoal(base_goal);
+	    	youbotBase->publishGoal(base_goal);
 	    }
-    
+   
     } else ROS_ERROR("Error with the QR detection.");
-    /*-- Pre-grasp position. --        
 
+    /*-- Pre-grasp position. --       
+    ROS_INFO("Going to pre-grasp position...");
     youbotArm->goToPregrasp();
     youbotArm->openGripper(); // Open the gripper with the move of the arm.				
 		
     sleep(5); // Wait for the arm to adopt the pose 
 
     /*-- Go to the grasp position. --
-    	     
+    ROS_INFO("Going to object grasp position...");    	     
     youbotArm->goToGrasp();	
     sleep(5); // Wait for reseach the goal.    
 	
@@ -139,7 +143,7 @@ int main(int argc, char** argv){
     sleep(5); // Wait until the gripper closes.
 
     /*-- Place the object in the plataform. --
-		
+    ROS_INFO("Going to place object position...");		
     youbotArm->goToPlace();
     sleep(2); // Wait to prevent falls.
 
@@ -148,7 +152,7 @@ int main(int argc, char** argv){
 
     youbotArm->goHome();
 
-      ros::spinOnce();  
+     ros::spinOnce();  
     }*/
 
     delete tfListener;

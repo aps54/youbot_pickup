@@ -87,7 +87,7 @@ void YoubotArm::publishArmValues(std::vector<double>& p){
    pos.positions = armJointPositions;
    arm_pub.publish(pos);
 
-   ROS_INFO("END publishArmValues");
+//   ROS_INFO("END publishArmValues");
 }
 
 void YoubotArm::publishGripperValues(double w){

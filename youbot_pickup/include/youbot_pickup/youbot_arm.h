@@ -34,7 +34,7 @@ class YoubotArm {
 	std::vector<double> graspSeed;
 	std::vector<double> placeSeed;
 
-	// Home values
+	// Home position values
 	std::vector<double> homeValues;
 
 	// Transforms
@@ -68,6 +68,8 @@ class YoubotArm {
 	/* Auxiliar functions */
 	
 	void goHome();
+
+	tf::Transform initialPose();
 	
 	// Gripper's functions
 	void openGripper();

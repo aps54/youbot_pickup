@@ -18,13 +18,14 @@ find_package(catkin REQUIRED COMPONENTS
   visp_ros
 )
 
-find_package(catkin REQUIRED COMPONENTS
-  ${ROS_CXX_DEPENDENCIES}
-)
+#find_package(catkin REQUIRED COMPONENTS
+#  ${ROS_CXX_DEPENDENCIES}
+#)
 
 ## System dependencies are found with CMake's conventions
- find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED COMPONENTS system)
 
+find_package(VISP REQUIRED)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -154,7 +155,7 @@ add_executable(${PROJECT_NAME}_node
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
 ## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
-# set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX "")
+#set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -166,7 +167,7 @@ add_executable(${PROJECT_NAME}_node
    ${Boost_LIBRARIES}
    ${visp_ros_LIBRARIES}
  )
-
+ 
 #############
 ## Install ##
 #############
@@ -189,7 +190,7 @@ add_executable(${PROJECT_NAME}_node
  )
 
 ## Mark launch directory for installation
- install(DIRECTORY launch DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+ install(DIRECTORY launch DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch)
 
 ## Mark cpp header files for installation
  install(DIRECTORY include/${PROJECT_NAME}/

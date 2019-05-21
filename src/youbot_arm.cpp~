@@ -87,7 +87,7 @@ void YoubotArm::publishArmValues(std::vector<double>& p){
    pos.positions = armJointPositions;
    arm_pub.publish(pos);
 
-   ROS_INFO("END publishArmValues");
+//   ROS_INFO("END publishArmValues");
 }
 
 void YoubotArm::publishGripperValues(double w){
@@ -172,20 +172,22 @@ void YoubotArm::closeGripper(){
 
 }
 
-void YoubotArm::goToPregrasp(){
-
-    moveArm(initSeed, init_tf);
-
-}
-
-void YoubotArm::goToGrasp(){
-
-    moveArm(graspSeed, grasp_tf);
+void YoubotArm::goToPregrasp(tf::Transform& goal){
+    
+    goal = goal * init_tf;
+    
+    moveArm(initSeed, goal);
 
 }
 
-void YoubotArm::goToPlace(){
+void YoubotArm::goToGrasp(tf::Transform& goal){
 
-    moveArm(placeSeed, place_tf);
+    moveArm(graspSeed, goal * grasp_tf);
+
+}
+
+void YoubotArm::goToPlace(tf::Transform& goal){
+
+    moveArm(placeSeed, goal * place_tf);
 
 }

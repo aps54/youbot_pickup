@@ -14,16 +14,15 @@ QRDetector::QRDetector()
     g.setCameraInfoTopic("/camera/rgb/camera_info");
     g.setRectify(true);
     //! [Setting camera info]
-
   
     detected = false;
     
     
-    // 3D model of the QRcode (4.5cm each side, change this for other metrics)
-    point.push_back(vpPoint(-0.0225, -0.0225, 0)); // QCcode point 0 3D coordinates in plane Z=0
-    point.push_back(vpPoint(0.0225, -0.0225, 0));  // QCcode point 1 3D coordinates in plane Z=0
-    point.push_back(vpPoint(0.0225, 0.0225, 0));   // QCcode point 2 3D coordinates in plane Z=0
-    point.push_back(vpPoint(-0.0225, 0.0225, 0));  // QCcode point 3 3D coordinates in plane Z=0
+    // 3D model of the QRcode (6cm each side, change this for other metrics)
+    point.push_back(vpPoint(-0.03, -0.03, 0)); // QCcode point 0 3D coordinates in plane Z=0
+    point.push_back(vpPoint(0.03, -0.03, 0));  // QCcode point 1 3D coordinates in plane Z=0
+    point.push_back(vpPoint(0.03, 0.03, 0));   // QCcode point 2 3D coordinates in plane Z=0
+    point.push_back(vpPoint(-0.03, 0.03, 0));  // QCcode point 3 3D coordinates in plane Z=0
 
   }
   catch(vpException e) {

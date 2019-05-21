@@ -10,6 +10,7 @@ project(youbot_pickup)
 find_package(catkin REQUIRED COMPONENTS
   nav_msgs
   roscpp
+  rospy
   std_msgs
   urdf
   moveit_core
@@ -18,13 +19,14 @@ find_package(catkin REQUIRED COMPONENTS
   visp_ros
 )
 
-find_package(catkin REQUIRED COMPONENTS
-  ${ROS_CXX_DEPENDENCIES}
-)
+#find_package(catkin REQUIRED COMPONENTS
+#  ${ROS_CXX_DEPENDENCIES}
+#)
 
 ## System dependencies are found with CMake's conventions
- find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED COMPONENTS system)
 
+find_package(VISP REQUIRED)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -77,10 +79,10 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   nav_msgs#   std_msgs
-# )
+ generate_messages(
+   DEPENDENCIES
+   nav_msgs#   std_msgs
+ )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -138,7 +140,11 @@ include_directories(
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(${PROJECT_NAME}
+# ${${PROJECT_NAME}_EXPORTED_TARGETS}
+# ${catkin_EXPORTED_TARGETS}
+#nav_msgs_generate_messages_cpp
+#)
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
@@ -154,11 +160,14 @@ add_executable(${PROJECT_NAME}_node
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
 ## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
-# set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX "")
+#set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+ add_dependencies(${PROJECT_NAME}_node 
+  ${${PROJECT_NAME}_EXPORTED_TARGETS}
+  ${catkin_EXPORTED_TARGETS}
+)
 
 ## Specify libraries to link a library or executable target against
  target_link_libraries(${PROJECT_NAME}_node
@@ -166,7 +175,7 @@ add_executable(${PROJECT_NAME}_node
    ${Boost_LIBRARIES}
    ${visp_ros_LIBRARIES}
  )
-
+ 
 #############
 ## Install ##
 #############

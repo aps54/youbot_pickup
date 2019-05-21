@@ -19,11 +19,11 @@ QRDetector::QRDetector()
     detected = false;
     
     
-    // 3D model of the QRcode (4.5cm each side, change this for other metrics)
-    point.push_back(vpPoint(-0.0225, -0.0225, 0)); // QCcode point 0 3D coordinates in plane Z=0
-    point.push_back(vpPoint(0.0225, -0.0225, 0));  // QCcode point 1 3D coordinates in plane Z=0
-    point.push_back(vpPoint(0.0225, 0.0225, 0));   // QCcode point 2 3D coordinates in plane Z=0
-    point.push_back(vpPoint(-0.0225, 0.0225, 0));  // QCcode point 3 3D coordinates in plane Z=0
+    // 3D model of the QRcode (6cm each side, change this for other metrics)
+    point.push_back(vpPoint(-0.03, -0.03, 0)); // QCcode point 0 3D coordinates in plane Z=0
+    point.push_back(vpPoint(0.03, -0.03, 0));  // QCcode point 1 3D coordinates in plane Z=0
+    point.push_back(vpPoint(0.03, 0.03, 0));   // QCcode point 2 3D coordinates in plane Z=0
+    point.push_back(vpPoint(-0.03, 0.03, 0));  // QCcode point 3 3D coordinates in plane Z=0
 
   }
   catch(vpException e) {
@@ -156,11 +156,11 @@ void QRDetector::getPose(vpHomogeneousMatrix& cMo, geometry_msgs::Pose& qr_pose)
 
 	qr_pose.position.x = t[0];
   	qr_pose.position.y = t[1];
-  	qr_pose.position.z = t[2];
+  	qr_pose.position.z = 0;
 
-  	qr_pose.orientation.x = vpQ.x();
-  	qr_pose.orientation.y = vpQ.y();
-  	qr_pose.orientation.z = 1;
+  	qr_pose.orientation.x = 0;
+  	qr_pose.orientation.y = 0;
+  	qr_pose.orientation.z = vpQ.z();
   	qr_pose.orientation.w = vpQ.w();
 
 	detected = false;

@@ -39,6 +39,7 @@ int main(int argc, char** argv){
 
     geometry_msgs::Pose base_goal;
     states robot_state;	
+    int trys=0;
 
     // TF
     tf::Transform goal_tf;
@@ -71,6 +72,8 @@ int main(int argc, char** argv){
 
     while(ros::ok()){
 
+	std::cout << "State: " << robot_state << std::endl;
+
 	switch (robot_state){
 	   
 	   case ready: 
@@ -91,16 +94,17 @@ int main(int argc, char** argv){
  	       /*-- QR code detection and pose estimation --*/
 
 	       if(qrDetector->detect()){
-
-		   ROS_INFO("QR DETECTED!");
-		   ROS_INFO("The QR pose is: ");
-	    	   base_goal = qrDetector->getPose();
-		   ROS_INFO("Position (x, y, z): %e, %e, %e", base_goal.position.x, base_goal.position.y, base_goal.position.z);
-		   ROS_INFO("Orientation (x, y, z, w): %e, %e, %e, %e", base_goal.orientation.x, base_goal.orientation.y, base_goal.orientation.z, base_goal.orientation.w);
+		   trys++;
+		   if(qrDetector->isQR()){
+		   	ROS_INFO("QR DETECTED!");
+		   	ROS_INFO("The QR pose is: ");
+	    	   	base_goal = qrDetector->getPose();
+		   	ROS_INFO("Position (x, y, z): %e, %e, %e", base_goal.position.x, base_goal.position.y, base_goal.position.z);
+		   	ROS_INFO("Orientation (x, y, z, w): %e, %e, %e, %e", base_goal.orientation.x, base_goal.orientation.y, base_goal.orientation.z, base_goal.orientation.w);
 
 			// Transform the pose to odom frame
 
-		/*try {
+		try {
 		  tfListener->lookupTransform("camera_link", "odom", ros::Time(0), camera_to_odom);
 
 		  geometry_msgs::Transform transform;		
@@ -133,20 +137,27 @@ int main(int argc, char** argv){
 		  ROS_INFO("Position (x, y, z): %e, %e, %e", base_goal.position.x, base_goal.position.y, base_goal.position.z);
 		  ROS_INFO("Orientation (x, y, z, w): %e, %e, %e, %e", base_goal.orientation.x, base_goal.orientation.y, base_goal.orientation.z, base_goal.orientation.w);
 
+		  robot_state = searching;
+		  trys = 0;
+
     		} catch(tf::LookupException e){
 		  ROS_ERROR("Error looking the TF (camera_link --> odom). Error: %s", e.what());
-    		}*/
+    		}
 
-		robot_state = searching;
+			
 		
-	       } else ROS_ERROR("Error with the QR detection.");
+	       	  } else ROS_ERROR("Error with the QR detection.");
+	       }
 
+	       if(trys > 5){
+		   ROS_INFO("Max. trys reseached. There are not a pickable object.");	   
+		}
 	       break;
 	
 	   case searching:
-		robot_state = navigating;
-
-		youbotBase->publishGoal(base_goal);
+		
+		//if(youbotBase->publishGoal(base_goal))
+			robot_state = navigating;
 		
 		break;
 
@@ -182,6 +193,22 @@ int main(int argc, char** argv){
 
 	    	robot_state = ready;
 		break;
+
+	   default:
+	   	ROS_ERROR("Unespecified state. Exiting the program...");
+		delete tfListener;
+    		tfListener = 0;
+
+    		delete youbotArm;
+    		youbotArm = 0;
+   
+    		delete youbotBase;
+    		youbotBase = 0;
+
+    		delete qrDetector;
+    		qrDetector = 0;	
+	
+		return 0;
 	}
 	ros::spinOnce();  
 

@@ -3,7 +3,7 @@
 #include <geometry_msgs/Quaternion.h>
 #include <nav_msgs/Odometry.h>
 
-#include <tgmath.h> // atan2
+#include <tgmath.h> // atan2 & fabs
 #include <stdlib.h> // abs
 
 class YoubotBase {
@@ -21,6 +21,8 @@ class YoubotBase {
 	double y;
 	double theta;
 
+	bool odom_rec;
+
 	/* Private functions */
 
 	// Taking a quaternion in x, y, z, w axis transform to euler angles (roll, pitch, yaw)
@@ -35,6 +37,9 @@ class YoubotBase {
 	/* Constructor */
 	YoubotBase(ros::NodeHandle& n);
 
-	void publishGoal(geometry_msgs::Pose& p);
+	bool publishGoal(geometry_msgs::Pose& p);
+
+	/* Auxiliar function */
+	void initialPose(double& x, double& y, double& z);
 
 };

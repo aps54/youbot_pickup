@@ -89,7 +89,7 @@ bool QRDetector::detect(){
     vpCameraParameters cam(g.getWidth(), g.getHeight(), I.getWidth() / 2, I.getHeight() / 2);
     ROS_INFO("Camera parameters settled.");
 
-    while(!detected) {
+    while(!detected && ros::ok()) {
       //! [Acquisition]
       g.acquire(I);
       //! [Acquisition]

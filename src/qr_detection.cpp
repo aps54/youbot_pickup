@@ -103,15 +103,16 @@ bool QRDetector::detect(){
       bool status = detector->detect(I);
       std::ostringstream legend;
       legend << detector->getNbObjects() << " bar code detected";
-      //ROS_INFO_STREAM(legend.str());
+      ROS_DEBUG_STREAM(legend.str());
       vpDisplay::displayText(I, (int)I.getHeight() - 30, 10, legend.str(), vpColor::red);
+      vpDisplay::flush(I);
       if (status) {
 	detected = true;
         for (size_t i = 0; i < detector->getNbObjects(); i++) {
           std::vector<vpImagePoint> p = detector->getPolygon(i);
           vpRect bbox = detector->getBBox(i);
           vpDisplay::displayRectangle(I, bbox, vpColor::green);
-          vpDisplay::displayText(I, (int)(bbox.getTop() - 10), (int)bbox.getLeft(), "Message: \"" + detector->getMessage(i) + "\"", vpColor::red);
+          //vpDisplay::displayText(I, (int)(bbox.getTop() - 10), (int)bbox.getLeft(), "Message: \"" + detector->getMessage(i) + "\"", vpColor::red);
           for (size_t j = 0; j < p.size(); j++) {
             vpDisplay::displayCross(I, p[j], 14, vpColor::red, 3);
             std::ostringstream number;
@@ -120,11 +121,12 @@ bool QRDetector::detect(){
           }
 	  ROS_INFO("Going to compute pose...");
 	  computePose(point, p, cam, init, cMo); // resulting pose is available in cMo global var
-          ROS_INFO_STREAM(std::endl << "Pose translation (meter): " << cMo.getTranslationVector().t() << std::endl
+          ROS_DEBUG_STREAM(std::endl << "Pose translation (meter): " << cMo.getTranslationVector().t() << std::endl
                     << "Pose rotation (quaternion): " << vpQuaternionVector(cMo.getRotationMatrix()).t());
           vpDisplay::displayFrame(I, cMo, cam, 0.05, vpColor::none, 3);
         }
 	vpDisplay::flush(I);
+	sleep(2);
       }
       if (vpDisplay::getClick(I, false))
         break;
@@ -165,7 +167,7 @@ void QRDetector::getPose(vpHomogeneousMatrix& cMo, geometry_msgs::Pose& qr_pose)
 	detected = false;
 
     } else {
-	ROS_ERROR("QR not detected.");
+	ROS_ERROR("QR has not been yet detected.");
     }
       
   }

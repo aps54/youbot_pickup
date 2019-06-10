@@ -127,19 +127,20 @@ int YoubotArm::moveArm(std::vector<double>& seed, tf::Transform& goal){
     goal_pose.orientation.z = q.getZ();
 
     
-    ROS_INFO("Goal pose: ");
-    std::cout << "Position(x, y, z) = (" <<  goal_pose.position.x << ", " << goal_pose.position.y << ", " << goal_pose.position.z << ")" << std::endl;
-    std::cout << "Rotation(x, y, z, w) = (" << goal_pose.orientation.x << ", " << goal_pose.orientation.y << ", " << goal_pose.orientation.z << ", " << goal_pose.orientation.w <<  ")" << std::endl;
+    ROS_DEBUG("Goal pose: ");
+    ROS_DEBUG_STREAM("Position(x, y, z) = (" <<  goal_pose.position.x << ", " << goal_pose.position.y << ", " << goal_pose.position.z << ")" << std::endl);
+    ROS_DEBUG_STREAM("Rotation(x, y, z, w) = (" << goal_pose.orientation.x << ", " << goal_pose.orientation.y << ", " << goal_pose.orientation.z << ", " << goal_pose.orientation.w <<  ")" << std::endl);
 
     ik_->getPositionIK(goal_pose, seed, solution, error_code);
     if(error_code.val == error_code.SUCCESS){
-	ROS_INFO("The solutions are: ");
-     	printf("A1. %e; A2. %e; A3. %e; A4. %e; A5. %e;\n", solution[0], solution[1], solution[2], solution[3], solution[4]);
+	ROS_DEBUG("The solutions are: ");
+     	ROS_DEBUG_STREAM("A1. " << solution[0] << "; A2. " << solution[1] << "; A3. " << solution[2] << "; A4. "<< solution[3] << "; A5. " << solution[4] << std::endl);
 	     
 	publishArmValues(solution);
 	return 0;						
 		
-     } else{ std::cout << "Error: " << error_code.val << std::endl;
+     } else{ 
+	std::cout << "Error: " << error_code.val << std::endl;
 	return -1;
      }
 }

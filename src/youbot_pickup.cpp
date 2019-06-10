@@ -72,11 +72,11 @@ int main(int argc, char** argv){
 
     while(ros::ok()){
 
-	std::cout << "State: " << robot_state << std::endl;
+	ROS_DEBUG_STREAM("State: " << robot_state << std::endl);
 
 	switch (robot_state){
 	   
-	   case ready: 
+	   case ready:
 
 /*  PRUEBAS
     base_goal.position.x = 0.06373;
@@ -97,52 +97,52 @@ int main(int argc, char** argv){
 		   trys++;
 		   if(qrDetector->isQR()){
 		   	ROS_INFO("QR DETECTED!");
-		   	ROS_INFO("The QR pose is: ");
+		   	ROS_DEBUG("The QR pose is: ");
 	    	   	base_goal = qrDetector->getPose();
-		   	ROS_INFO("Position (x, y, z): %e, %e, %e", base_goal.position.x, base_goal.position.y, base_goal.position.z);
-		   	ROS_INFO("Orientation (x, y, z, w): %e, %e, %e, %e", base_goal.orientation.x, base_goal.orientation.y, base_goal.orientation.z, base_goal.orientation.w);
+		   	ROS_DEBUG("Position (x, y, z): %e, %e, %e", base_goal.position.x, base_goal.position.y, base_goal.position.z);
+		   	ROS_DEBUG("Orientation (x, y, z, w): %e, %e, %e, %e", base_goal.orientation.x, base_goal.orientation.y, base_goal.orientation.z, base_goal.orientation.w);
 
 			// Transform the pose to odom frame
 
-		try {
-		  tfListener->lookupTransform("camera_link", "odom", ros::Time(0), camera_to_odom);
+			try {
+			  tfListener->lookupTransform("camera_link", "odom", ros::Time(0), camera_to_odom);
 
-		  geometry_msgs::Transform transform;		
+			  geometry_msgs::Transform transform;		
 
-		  p = camera_to_odom.getOrigin();
-		  q = camera_to_odom.getRotation();
-		  ROS_INFO("The camera to odom transform:");
-		  ROS_INFO("Translation (x, y, z): %e, %e, %e", p.getX(), p.getY(), p.getZ());
-		  ROS_INFO("Rotation (x, y, z, w): %e, %e, %e, %e", q.getX(), q.getY(), q.getZ(), q.getW());
+			  p = camera_to_odom.getOrigin();
+			  q = camera_to_odom.getRotation();
+			  ROS_DEBUG("The camera to odom transform:");
+			  ROS_DEBUG("Translation (x, y, z): %e, %e, %e", p.getX(), p.getY(), p.getZ());
+			  ROS_DEBUG("Rotation (x, y, z, w): %e, %e, %e, %e", q.getX(), q.getY(), q.getZ(), q.getW());
 
-		  tf::Transform goal_tf;
-		  p.setValue(base_goal.position.x, base_goal.position.y, base_goal.position.z);
-		  goal_tf.setOrigin(p);
-		  q.setValue(base_goal.orientation.x, base_goal.orientation.y, base_goal.orientation.z, base_goal.orientation.w);
-		  goal_tf.setRotation(q);
-		  goal_tf = goal_tf * camera_to_odom; // Do the transform
+			  tf::Transform goal_tf;
+			  p.setValue(base_goal.position.x, base_goal.position.y, base_goal.position.z);
+			  goal_tf.setOrigin(p);
+			  q.setValue(base_goal.orientation.x, base_goal.orientation.y, base_goal.orientation.z, base_goal.orientation.w);
+			  goal_tf.setRotation(q);
+			  goal_tf = goal_tf * camera_to_odom; // Do the transform
 
-		  p = goal_tf.getOrigin();
-		  base_goal.position.x = p.getX();
-		  base_goal.position.y = p.getY();
-		  base_goal.position.z = p.getZ();
+			  p = goal_tf.getOrigin();
+			  base_goal.position.x = p.getX();
+			  base_goal.position.y = p.getY();
+			  base_goal.position.z = p.getZ();
 
-		  q = goal_tf.getRotation();
-		  base_goal.orientation.x = q.getX();
-		  base_goal.orientation.y = q.getY();
-		  base_goal.orientation.z = q.getZ();
-		  base_goal.orientation.w = q.getW();
+			  q = goal_tf.getRotation();
+			  base_goal.orientation.x = q.getX();
+			  base_goal.orientation.y = q.getY();
+			  base_goal.orientation.z = q.getZ();
+			  base_goal.orientation.w = q.getW();
 
-		  ROS_INFO("The computed pose will be:");
-		  ROS_INFO("Position (x, y, z): %e, %e, %e", base_goal.position.x, base_goal.position.y, base_goal.position.z);
-		  ROS_INFO("Orientation (x, y, z, w): %e, %e, %e, %e", base_goal.orientation.x, base_goal.orientation.y, base_goal.orientation.z, base_goal.orientation.w);
+			  ROS_INFO("The computed pose will be:");
+			  ROS_INFO("Position (x, y, z): %e, %e, %e", base_goal.position.x, base_goal.position.y, base_goal.position.z);
+			  ROS_INFO("Orientation (x, y, z, w): %e, %e, %e, %e", base_goal.orientation.x, base_goal.orientation.y, base_goal.orientation.z, base_goal.orientation.w);
 
-		  robot_state = searching;
-		  trys = 0;
+			  robot_state = searching;
+			  trys = 0;
 
-    		} catch(tf::LookupException e){
-		  ROS_ERROR("Error looking the TF (camera_link --> odom). Error: %s", e.what());
-    		}
+	    		} catch(tf::LookupException e){
+			  ROS_ERROR("Error looking the TF (camera_link --> odom). Error: %s", e.what());
+	    		}
 
 			
 		
@@ -156,7 +156,7 @@ int main(int argc, char** argv){
 	
 	   case searching:
 		
-		//if(youbotBase->publishGoal(base_goal))
+		if(youbotBase->publishGoal(base_goal))
 			robot_state = navigating;
 		
 		break;
@@ -208,7 +208,8 @@ int main(int argc, char** argv){
     		delete qrDetector;
     		qrDetector = 0;	
 	
-		return 0;
+		ros::shutdown();
+		return -1;
 	}
 	ros::spinOnce();  
 

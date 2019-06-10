@@ -68,39 +68,64 @@ bool YoubotBase::publishGoal(geometry_msgs::Pose& p){
     /* Expecific use for this application */
 
 	geometry_msgs::Twist speed;
-	double x_, y_, angle_to_goal;
+	double x_, y_, angle_to_goal; // Distances
+	double t;		      // Time
 
 	if(odom_rec){ // Ensure that odom has been received.
 
 	   x_ = p.position.x - x;
 	   y_ = p.position.y - y;
 
-	   std::cout << "X distancia: " << x_ << "Y distancia: " << y_ << "Rotación: " << theta << std::endl;
+	   odom_rec = false; // For wait the next odom.
 
-	   while(fabs(x_) > 0.016 || fabs(y_) > 0.016){
-		
-	   	angle_to_goal = atan2(x_,y_);
+	   std::cout << "X distancia: " << x_ << "  Y distancia: " << y_ << "  Rotación: " << theta << std::endl;
 
-	   	if (abs(angle_to_goal - theta) > 0.1){ // Rotate to the goal
-			speed.linear.x = 0.0;
-			speed.linear.y = 0.0;
-        		speed.angular.z = 0.3;
-	   	} else {
-			speed.linear.x = 0.5;
-			speed.linear.y = 0.0;
-        		speed.angular.z = 0.0;
-	   	}
+	   angle_to_goal = atan2(x_,y_);
 
-	   	vel_pub.publish(speed);
-	   
-	   }
+	   std::cout << "Distancia rotación: " << angle_to_goal << std::endl;
+
+	   /*if (abs(angle_to_goal - theta) > 0.1){ // Rotate to the goal
+		speed.linear.x = 0.0;
+		speed.linear.y = 0.0;
+        	speed.angular.z = 0.3;
+		t = abs(angle_to_goal - theta) / 0.3;
+	   } else {*/
+		speed.linear.x = 0.5;
+		speed.linear.y = 0.0;
+        	speed.angular.z = 0.0;
+		if((fabs(x_) - 0.105) <= 0) {
+			t = 0.001;
+			t = t * 1000000; // convert to microseconds
+			speed.linear.x = - 0.5;
+		}else {
+			t = (fabs(x_) - 0.105) / 0.5; // calculate the time (seconds)
+			t = t * 1000000; // convert to microseconds
+		}
+	   //}
+ 	
+	   vel_pub.publish(speed);
+
+	   std::cout << "*Snooze* I'm sleepy, i'll come back in " << t << " microseconds." << std::endl; 
+
+	   usleep(t);
 
 	   speed.linear.x = 0.0;
 	   speed.linear.y = 0.0;
 	   speed.angular.z = 0.0;
 
 	   vel_pub.publish(speed);
+
+	   std::cout << "OMG I think I'm a sleepwalker..." << std::endl;
+		
 	   return true;
+
 	}
+	
+	/* Only for security reasons */
+	speed.linear.x = 0.0;
+	speed.linear.y = 0.0;
+	speed.angular.z = 0.0;
+
+	vel_pub.publish(speed);
 	return false;
 }

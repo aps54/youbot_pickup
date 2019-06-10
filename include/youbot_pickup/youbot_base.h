@@ -39,7 +39,5 @@ class YoubotBase {
 
 	bool publishGoal(geometry_msgs::Pose& p);
 
-	/* Auxiliar function */
-	void initialPose(double& x, double& y, double& z);
-
+	
 };

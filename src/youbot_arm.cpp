@@ -36,9 +36,9 @@ YoubotArm::YoubotArm(ros::NodeHandle& n){
   graspSeed.push_back(3.00);
 
   placeSeed.push_back(3.09);
-  placeSeed.push_back(-0.0);
-  placeSeed.push_back(-2.61);
-  placeSeed.push_back(0.017);
+  placeSeed.push_back(0.0);
+  placeSeed.push_back(-2.55);
+  placeSeed.push_back(0.0);
   placeSeed.push_back(2.92);
 
   // Set transforms for IK. (Empirically obtained)
@@ -55,8 +55,8 @@ YoubotArm::YoubotArm(ros::NodeHandle& n){
   grasp_tf.setOrigin(t);
   grasp_tf.setRotation(rotation);
 
-  t.setValue(-0.227, 0.034, 0.100);
-  rotation.setValue(0.067, 0.994, 0.005, -0.083);
+  t.setValue(-0.230, 0.028, 0.110);
+  rotation.setValue(0.076, 0.991, 0.004, -0.106);
 
   place_tf.setOrigin(t);
   place_tf.setRotation(rotation);

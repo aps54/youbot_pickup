@@ -68,13 +68,17 @@ bool YoubotBase::publishGoal(geometry_msgs::Pose& p){
     /* Expecific use for this application */
 
 	geometry_msgs::Twist speed;
-	double x_, y_, angle_to_goal; // Distances
-	double t;		      // Time
+	double x_, y_, angle_to_goal, d; // Distances
+	double t, t_;		         // Time
 
 	if(odom_rec){ // Ensure that odom has been received.
 
 	   x_ = p.position.x - x;
 	   y_ = p.position.y - y;
+	   d = fabs(x_) - 0.0105;
+	   t_ = 0.018 / 0.3;
+
+	   std::cout << "tiempo a restar: " << t_ << " segundos." << std::endl;
 
 	   odom_rec = false; // For wait the next odom.
 
@@ -90,15 +94,18 @@ bool YoubotBase::publishGoal(geometry_msgs::Pose& p){
         	speed.angular.z = 0.3;
 		t = abs(angle_to_goal - theta) / 0.3;
 	   } else {*/
-		speed.linear.x = 0.5;
+		speed.linear.x = 0.3;
 		speed.linear.y = 0.0;
         	speed.angular.z = 0.0;
-		if((fabs(x_) - 0.105) <= 0) {
-			t = 0.001;
+		if(x_ < 0) {
+			t = (fabs(x_) / speed.linear.x) - t_;
 			t = t * 1000000; // convert to microseconds
-			speed.linear.x = - 0.5;
-		}else {
-			t = (fabs(x_) - 0.105) / 0.5; // calculate the time (seconds)
+			speed.linear.x = -0.3;
+			std::cout << "Marcha atrás... *pi pi pi*" << std::endl;
+		}else if (d == 0.0){
+			t = 0;
+		} else {
+			t = (x_ / speed.linear.x) - t_; // calculate the time (seconds)
 			t = t * 1000000; // convert to microseconds
 		}
 	   //}

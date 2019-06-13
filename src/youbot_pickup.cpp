@@ -46,19 +46,10 @@ int main(int argc, char** argv){
     tf::Vector3 p;
     tf::Quaternion q;
     tf::TransformListener* tfListener = new tf::TransformListener();
-    tf::StampedTransform a0_to_base_link;
-    tf::StampedTransform a0_to_a5;
-    tf::StampedTransform camera_to_base;
+
     tf::StampedTransform camera_to_odom;
 	
     sleep(2); // For fill TF listener.
-	
-    try {
-	tfListener->lookupTransform("arm_link_0", "base_link", ros::Time(0), a0_to_base_link);
-	tfListener->lookupTransform("arm_link_0", "arm_link_5", ros::Time(0), a0_to_a5);
-    } catch(tf::LookupException e){
-	ROS_ERROR("Error looking the TF. Error: %s", e.what());
-    }
 
    /*-- Initializations --*/ 
 	

@@ -19,7 +19,14 @@ or enable the USE_SETCAP flag in the cmake file and recompile again.
   	<node pkg="tf" type="static_transform_publisher" name="virtual_joint_broadcaster_0" args="0.28 0 0.07 0 0 0 base_link camera_link 100" respawn="true"/>
 	
 	<!-- Kinect's drivers -->
-	<include file="$(find freenect_launch)/launch/freenect.launch"></include>
+	<include file="$(find freenect_launch)/launch/freenect.launch">
+	</include>
+
+	<!-- Laser generator -->
+	<include file="$(find depthimage_to_laserscan)/launch/depth_registration_good_new.launch"/>
+
+	<!-- Joystick control -->
+	<include file="$(find teleop_joy)/launch/youbot_teleop_joy.launch"/>
 
 </launch>
 

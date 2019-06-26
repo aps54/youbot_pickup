@@ -1,5 +1,6 @@
 #include <youbot_pickup/youbot_arm.h>
 
+/* Constructor */
 YoubotArm::YoubotArm(ros::NodeHandle& n){
 
   // Publishers
@@ -101,7 +102,7 @@ void YoubotArm::publishGripperValues(double w){
    gripperJointPositions[1].unit = boost::units::to_string(boost::units::si::meter);
 
    gripperJointPositions[0].value = w;
-   gripperJointPositions[0].value = w;
+   gripperJointPositions[1].value = w;
 
    pos.positions = gripperJointPositions;
    gripper_pub.publish(pos);

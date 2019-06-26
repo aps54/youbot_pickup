@@ -147,9 +147,15 @@ int main(int argc, char** argv){
 	
 	   case searching:
 		
-		if(youbotBase->publishGoal(base_goal))
+		if(youbotBase->publishGoal(base_goal)){
+			trys = 0;
 			robot_state = navigating;
-		
+		} else if(trys > 5){
+		   	ROS_INFO("Max. trys reseached. I can't go to the passed object.");
+		  	robot_state = ready;
+			trys = 0;	   
+		} else 
+			trys++;
 		break;
 
 	   case navigating:
@@ -160,8 +166,8 @@ int main(int argc, char** argv){
 	    	youbotArm->goToPregrasp();
 	    	youbotArm->openGripper(); // Open the gripper with the move of the arm.				
 		
-	    	sleep(5); // Wait for the arm to adopt the pose 
-
+	    	sleep(20);//sleep(5); // Wait for the arm to adopt the pose 
+		
 	    	/*-- Go to the grasp position. --*/
 	    	ROS_INFO("Going to object grasp position...");    	     
 	    	youbotArm->goToGrasp();	
@@ -175,7 +181,7 @@ int main(int argc, char** argv){
 	    	/*-- Place the object in the plataform. --*/
 	    	ROS_INFO("Going to place object position...");		
 	    	youbotArm->goToPlace();
-	    	sleep(2); // Wait to prevent falls.
+	    	sleep(5); // Wait to prevent falls.
 
 	    	youbotArm->openGripper();
 	    	sleep(5); // Wait until the gripper is all open.

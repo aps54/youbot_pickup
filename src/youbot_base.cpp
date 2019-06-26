@@ -76,7 +76,7 @@ bool YoubotBase::publishGoal(geometry_msgs::Pose& p){
 	   x_ = p.position.x - x;
 	   y_ = p.position.y - y;
 	   d = fabs(x_) - 0.0105;
-	   t_ = 0.018 / 0.3;
+	   t_ = 0.087 / 0.3;
 
 	   std::cout << "tiempo a restar: " << t_ << " segundos." << std::endl;
 
@@ -110,6 +110,11 @@ bool YoubotBase::publishGoal(geometry_msgs::Pose& p){
 		}
 	   //}
  	
+	   // To not publish negative time values.
+	   if(t < 0){
+		ROS_ERROR("There have been a problem calculating the distance of the object.");
+		return false;
+	   } 
 	   vel_pub.publish(speed);
 
 	   std::cout << "*Snooze* I'm sleepy, i'll come back in " << t << " microseconds." << std::endl; 

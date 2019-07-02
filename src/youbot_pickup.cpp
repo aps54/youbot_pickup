@@ -34,7 +34,7 @@ enum states {
 int main(int argc, char** argv){
   
     ros::init(argc, argv, "youbot_pickup");
-    ros::NodeHandle nh("~"); // Private
+    ros::NodeHandle nh("~"); // Private node handler.
     ros::NodeHandle n;
 
     geometry_msgs::Pose base_goal;
@@ -68,19 +68,6 @@ int main(int argc, char** argv){
 	switch (robot_state){
 	   
 	   case ready:
-
-/*  PRUEBAS
-    base_goal.position.x = 0.06373;
-    base_goal.position.y = 0.84160;
-    base_goal.position.z = 0.0;
-
-    base_goal.orientation.x = 0.0;
-    base_goal.orientation.y = 0.0;
-    base_goal.orientation.z = 0.36485;
-    base_goal.orientation.w = 0.01238;
-
-    youbotBase->publishGoal(base_goal);
-*/
 
  	       /*-- QR code detection and pose estimation --*/
 
@@ -146,12 +133,13 @@ int main(int argc, char** argv){
 	       break;
 	
 	   case searching:
-		
+
+		/*-- Move the base --*/		
 		if(youbotBase->publishGoal(base_goal)){
 			trys = 0;
 			robot_state = navigating;
 		} else if(trys > 5){
-		   	ROS_INFO("Max. trys reseached. I can't go to the passed object.");
+		   	ROS_ERROR("Max. trys reseached. I can't go to the passed object.");
 		  	robot_state = ready;
 			trys = 0;	   
 		} else 
@@ -166,7 +154,7 @@ int main(int argc, char** argv){
 	    	youbotArm->goToPregrasp();
 	    	youbotArm->openGripper(); // Open the gripper with the move of the arm.				
 		
-	    	sleep(20);//sleep(5); // Wait for the arm to adopt the pose 
+	    	sleep(5); // Wait for the arm to adopt the pose 
 		
 	    	/*-- Go to the grasp position. --*/
 	    	ROS_INFO("Going to object grasp position...");    	     

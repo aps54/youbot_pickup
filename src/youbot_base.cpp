@@ -78,15 +78,15 @@ bool YoubotBase::publishGoal(geometry_msgs::Pose& p){
 	   d = fabs(x_) - 0.0105;
 	   t_ = 0.087 / 0.3;
 
-	   std::cout << "tiempo a restar: " << t_ << " segundos." << std::endl;
+	   //std::cout << "tiempo a restar: " << t_ << " segundos." << std::endl;
 
 	   odom_rec = false; // For wait the next odom.
 
-	   std::cout << "X distancia: " << x_ << "  Y distancia: " << y_ << "  Rotación: " << theta << std::endl;
+	   //std::cout << "X distancia: " << x_ << "  Y distancia: " << y_ << "  Rotación: " << theta << std::endl;
 
 	   angle_to_goal = atan2(x_,y_);
 
-	   std::cout << "Distancia rotación: " << angle_to_goal << std::endl;
+	   //std::cout << "Distancia rotación: " << angle_to_goal << std::endl;
 
 	   /*if (abs(angle_to_goal - theta) > 0.1){ // Rotate to the goal
 		speed.linear.x = 0.0;
@@ -101,7 +101,7 @@ bool YoubotBase::publishGoal(geometry_msgs::Pose& p){
 			t = (fabs(x_) / speed.linear.x) - t_;
 			t = t * 1000000; // convert to microseconds
 			speed.linear.x = -0.3;
-			std::cout << "Marcha atrás... *pi pi pi*" << std::endl;
+			//std::cout << "Marcha atrás... *pi pi pi*" << std::endl;
 		}else if (d == 0.0){
 			t = 0;
 		} else {
@@ -117,7 +117,7 @@ bool YoubotBase::publishGoal(geometry_msgs::Pose& p){
 	   } 
 	   vel_pub.publish(speed);
 
-	   std::cout << "*Snooze* I'm sleepy, i'll come back in " << t << " microseconds." << std::endl; 
+	   //std::cout << "*Snooze* I'm sleepy, i'll come back in " << t << " microseconds." << std::endl; 
 
 	   usleep(t);
 
@@ -127,7 +127,7 @@ bool YoubotBase::publishGoal(geometry_msgs::Pose& p){
 
 	   vel_pub.publish(speed);
 
-	   std::cout << "OMG I think I'm a sleepwalker..." << std::endl;
+	   //std::cout << "OMG I think I'm a sleepwalker..." << std::endl;
 		
 	   return true;
 
